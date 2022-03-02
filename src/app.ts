@@ -50,7 +50,7 @@ app.get('/', (req: Request, res: Response) => {
 });
 
 app.get('/dev/accounts', (req: Request, res: Response) => {
-  res.json(accounts);
+  res.send(accounts);
 });
 
 function errorPayload(code, message) {
@@ -63,7 +63,7 @@ app.post('/register', (req: Request, res: Response) => {
   const { email, name, password } = req.body;
   const acc = accounts.find(acc => acc.email === email);
   if (acc) {
-    return res.status(409).json(errorPayload('email_used',  'Email already used'));
+    return res.status(409).send(errorPayload('email_used',  'Email already used'));
   }
 
   accounts = [...accounts, { email, name, password }];
@@ -84,7 +84,7 @@ app.post('/authenticate', (req: Request, res: Response) => {
 
   const acc = accounts.find(acc => acc.email === email && acc.password === password);
   if (!acc) {
-    return res.status(401).json(errorPayload('invalid_credentials', 'Invalid username or password'));
+    return res.status(401).send(errorPayload('invalid_credentials', 'Invalid username or password'));
   }
 
   const payload = buildTokenPayload(type);
@@ -98,7 +98,7 @@ app.post('/authenticate', (req: Request, res: Response) => {
     res.cookie(COOKIE_USER_FINGERPRINT, payload.userFingerprint, { sameSite: 'strict', httpOnly: true });
   }
 
-  return res.status(201).json({ token });
+  return res.status(201).send({ token });
 });
 
 function authChecks(req: RequestWithAuth, res: Response, next: NextFunction) {
@@ -130,7 +130,7 @@ app.get('/userinfo', authChecks, (req: AuthenticatedRequest, res: Response) => {
   }
 
   const { email, name } = acc;
-  res.json({ email, name });
+  res.send({ email, name });
 });
 
 app.get('/tasks', authChecks, (req: AuthenticatedRequest, res: Response) => {
@@ -150,7 +150,7 @@ app.get('/tasks', authChecks, (req: AuthenticatedRequest, res: Response) => {
     return true;
   }).map(({ id, name, completed }) => ({ id, name, completed }));
 
-  res.json(filteredTasks);
+  res.send(filteredTasks);
 });
 
 app.post('/tasks', authChecks, (req: AuthenticatedRequest, res: Response) => {
@@ -172,7 +172,7 @@ app.get('/tasks/:id', authChecks, (req: AuthenticatedRequest, res: Response) => 
   }
 
   const { id, name, completed } = found;
-  return res.json({ id, name, completed });
+  return res.send({ id, name, completed });
 });
 
 app.put('/tasks/:id', authChecks, (req: AuthenticatedRequest, res: Response) => {
@@ -217,7 +217,7 @@ app.put('/tasks/:id/name', authChecks, (req: AuthenticatedRequest, res: Response
   const paramId = req.params.id;
   const nameValue = req.body;
   if (!nameValue) {
-    return res.status(400).json(errorPayload('empty_name', 'Name is empty'));
+    return res.status(400).send(errorPayload('empty_name', 'Name is empty'));
   }
 
   const found = tasks.find(task => (
