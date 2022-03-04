@@ -161,9 +161,9 @@ app.post('/tasks', authChecks, (req: AuthenticatedRequest, res: Response) => {
 });
 
 app.get('/tasks/:id', authChecks, (req: AuthenticatedRequest, res: Response) => {
-  const paramId = req.params.id;
+  const paramId = parseInt(req.params.id, 10);
   const found = tasks.find(task => (
-    task.id === Number(paramId) &&
+    task.id === paramId &&
     task.ownerId === req.authenticatedId
   ));
 
@@ -176,9 +176,9 @@ app.get('/tasks/:id', authChecks, (req: AuthenticatedRequest, res: Response) => 
 });
 
 app.put('/tasks/:id', authChecks, (req: AuthenticatedRequest, res: Response) => {
-  const paramId = req.params.id;
+  const paramId = parseInt(req.params.id, 10);
   const found = tasks.find(task => (
-    task.id === Number(paramId) &&
+    task.id === paramId &&
     task.ownerId === req.authenticatedId
   ));
 
@@ -199,9 +199,9 @@ app.put('/tasks/:id', authChecks, (req: AuthenticatedRequest, res: Response) => 
 });
 
 app.delete('/tasks/:id', authChecks, (req: AuthenticatedRequest, res: Response) => {
-  const paramId = req.params.id;
+  const paramId = parseInt(req.params.id, 10);
   const found = tasks.find(task => (
-    task.id === Number(paramId) && 
+    task.id === paramId && 
     task.ownerId === req.authenticatedId
   ));
 
@@ -214,14 +214,14 @@ app.delete('/tasks/:id', authChecks, (req: AuthenticatedRequest, res: Response) 
 });
 
 app.put('/tasks/:id/name', authChecks, (req: AuthenticatedRequest, res: Response) => {
-  const paramId = req.params.id;
+  const paramId = parseInt(req.params.id);
   const nameValue = req.body;
   if (!nameValue) {
     return res.status(400).send(errorPayload('empty_name', 'Name is empty'));
   }
 
   const found = tasks.find(task => (
-    task.id === Number(paramId) && task.ownerId === req.authenticatedId
+    task.id === paramId && task.ownerId === req.authenticatedId
   ));
   if (!found) {
     return res.status(404).send('not found');
@@ -238,9 +238,9 @@ app.put('/tasks/:id/name', authChecks, (req: AuthenticatedRequest, res: Response
 });
 
 app.put('/tasks/:id/completed', authChecks, (req: AuthenticatedRequest, res: Response) => {
-  const paramId = req.params.id;
+  const paramId = parseInt(req.params.id, 10);
   const found = tasks.find(task => (
-    task.id === Number(paramId) && task.ownerId === req.authenticatedId
+    task.id === paramId && task.ownerId === req.authenticatedId
   ));
   if (!found) {
     return res.status(404).send('not found');
@@ -258,9 +258,9 @@ app.put('/tasks/:id/completed', authChecks, (req: AuthenticatedRequest, res: Res
 });
 
 app.delete('/tasks/:id/completed', authChecks, (req: AuthenticatedRequest, res: Response) => {
-  const paramId = req.params.id;
+  const paramId = parseInt(req.params.id, 10);
   const found = tasks.find(task => (
-    task.id === Number(paramId) && task.ownerId === req.authenticatedId
+    task.id === paramId && task.ownerId === req.authenticatedId
   ));
   if (!found) {
     return res.status(404).send('not found');
